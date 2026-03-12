@@ -1,0 +1,143 @@
+version: '1.0'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      - POSTGRES_USER=databaseteam
+      - POSTGRES_PASSWORD=databaseteam123
+      - POSTGRES_DB=database_management
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U databaseteam -d database_management" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_ui
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=databaseteam@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=databaseteam123
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+          condition: service_healthy
+
+  clickhouse_db:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse_db
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - clickhouse_logs:/var/log/clickhouse-server
+    environment:
+      - CLICKHOUSE_DB=database_management
+      - CLICKHOUSE_USER=databaseteam
+      - CLICKHOUSE_PASSWORD=databaseteam123
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+
+  tabix:
+    image: spoonest/clickhouse-tabix-web-client
+    container_name: clickhouse_ui
+    platform: linux/amd64
+    ports:
+      - "8081:80"
+    depends_on:
+      - clickhouse_db
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+    container_name: elasticsearch
+    environment:
+      - node.name=es-node01
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.10.2
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+
+  airflow-db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+
+  airflow-webserver:
+    image: apache/airflow:2.7.1
+    container_name: airflow_webserver
+    depends_on:
+      - airflow-db
+    ports:
+      - "8080:8080"
+    environment:
+      - AIRFLOW__WEBSERVER__SECRET_KEY=something_random_and_long
+      - PYTHONPATH=/opt/airflow/src
+      - _PIP_ADDITIONAL_REQUIREMENTS=psycopg2-binary
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-db/airflow
+      - AIRFLOW_CONN_MY_POSTGRES_CONN=postgres://airflow:airflow@airflow-db:5432/airflow
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./src:/opt/airflow/src
+    # Tự động init DB và tạo user admin khi start
+    command: bash -c "airflow db init && airflow users create --username admin --password admin --firstname Tuan --lastname Cao --role Admin --email databaseteam@gmail.com && airflow webserver"
+
+  airflow-scheduler:
+    image: apache/airflow:2.7.1
+    container_name: airflow_scheduler
+    depends_on:
+      - airflow-db
+    environment:
+      - AIRFLOW__WEBSERVER__SECRET_KEY=something_random_and_long
+      - PYTHONPATH=/opt/airflow/src
+      - _PIP_ADDITIONAL_REQUIREMENTS=psycopg2-binary
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-db/airflow
+      - AIRFLOW_CONN_MY_POSTGRES_CONN=postgres://airflow:airflow@airflow-db:5432/airflow
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./src:/opt/airflow/src
+    command: scheduler
+
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  clickhouse_data:
+    driver: local
+  clickhouse_logs:
+    driver: local
+  es_data:
+    driver: local

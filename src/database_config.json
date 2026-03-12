@@ -1,0 +1,17 @@
+{
+  "db_datamanagement_test": {
+    "host": "postgres",
+    "database": "database_management",
+    "user": "databaseteam",
+    "password": "databaseteam123",
+    "port": "5432"
+  },
+
+  "db_production": {
+    "host": "postgres",
+    "database": "database_management",
+    "user": "databaseteam",
+    "password": "databaseteam123",
+    "port": "5432"
+  }
+}
