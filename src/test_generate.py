@@ -13,15 +13,15 @@ def generate_data(target_db='db_datamanagement_test'):
     db_params = configs.get(target_db)
 
     if not db_params:
-        raise ValueError(f"Không tìm thấy cấu hình cho {target_db}")
+        raise ValueError(f"Not found config {target_db}")
 
-    print(f"Đang kết nối tới Database: {db_params['database']} trên Host: {db_params['host']}")
+    print(f"Connecting to database: {db_params['database']} in Host: {db_params['host']}")
 
     try:
         conn = psycopg2.connect(**db_params)
         cur = conn.cursor()
 
-        for i in range(1, 11):
+        for i in range(1, 1000):
             order_id = str(uuid.uuid4())
             order_code = f"ORD-{random.randint(10000, 99999)}-{i}"
             shop_code = random.choice(['S001', 'S002', 'S003', 'S004', 'S005'])
@@ -45,10 +45,10 @@ def generate_data(target_db='db_datamanagement_test'):
             print(f"Đã chèn: {order_code}")
 
         conn.commit()
-        print("--- Hoàn tất! 10 dòng đã được đẩy vào Postgres ---")
+        print("--- 10 Rows have been synced to Postgres successfully ---")
 
     except Exception as error:
-        print(f"Lỗi khi chèn dữ liệu: {error}")
+        print(f"Sync data errors: {error}")
         conn.rollback()
     finally:
         cur.close()
@@ -57,7 +57,7 @@ try:
     connection = psycopg2.connect(**conn_params)
     generate_data(connection)
 except Exception as error:
-    print(f"Không thể kết nối tới Postgres: {error}")
+    print(f"Can't connect to Postgres: {error}")
 finally:
     if 'connection' in locals() and connection:
         connection.close()

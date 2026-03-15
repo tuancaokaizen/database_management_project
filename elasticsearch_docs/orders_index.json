@@ -1,0 +1,103 @@
+PUT /orders_index
+{
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 1,
+    "analysis": {
+      "analyzer": {
+        "code_analyzer": {
+          "type": "custom",
+          "tokenizer": "keyword",
+          "filter": [
+            "lowercase"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "OrderId": {
+        "type": "keyword"
+      },
+      "OrderCode": {
+        "type": "keyword",
+        "fields": {
+          "text": {
+            "type": "text",
+            "analyzer": "code_analyzer"
+          }
+        }
+      },
+      "OrderStatus": {
+        "type": "short"
+      },
+      "ShopCode": {
+        "type": "keyword"
+      },
+      "CustomerCode": {
+        "type": "keyword"
+      },
+      "InvoiceHeader": {
+        "type": "keyword"
+      },
+      "CreatedDate": {
+        "type": "date"
+      },
+      "ModifiedDate": {
+        "type": "date"
+      },
+      "Shipment": {
+        "type": "short"
+      },
+      "OrderType": {
+        "type": "short"
+      },
+      "OrderChannel": {
+        "type": "short"
+      },
+      "EInvoice": {
+        "properties": {
+          "Id": {
+            "type": "keyword"
+          },
+          "InvoiceHeader": {
+            "type": "keyword"
+          },
+          "InvoiceSymbol": {
+            "type": "keyword"
+          },
+          "InvoiceDate": {
+            "type": "date"
+          }
+        }
+      },
+      "OrderItems": {
+        "type": "nested",
+        "properties": {
+          "OrderItemId": {
+            "type": "keyword"
+          },
+          "ItemCode": {
+            "type": "keyword"
+          },
+          "Price": {
+            "type": "integer"
+          },
+          "LineNum": {
+            "type": "integer"
+          },
+          "Quantity": {
+            "type": "integer"
+          },
+          "IsPromotion": {
+            "type": "boolean"
+          },
+          "Unit": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  }
+}
