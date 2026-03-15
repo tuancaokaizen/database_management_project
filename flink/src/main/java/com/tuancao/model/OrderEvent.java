@@ -5,12 +5,15 @@ import java.util.List;
 public class OrderEvent {
     public String OrderId;
     public String OrderCode;
-    public Integer OrderStatus;
     public String ShopCode;
     public String CustomerCode;
-    public String InvoiceHeader;
+    public Integer OrderStatus;
     public String CreatedDate;
     public String ModifiedDate;
+    public String InvoiceHeader;
+    public String DataSource;
+    public Double TotalAmount;
+
     public EInvoice EInvoice;
     public List<OrderItem> OrderItems;
 
@@ -25,8 +28,8 @@ public class OrderEvent {
         public String OrderItemId;
         public String ItemCode;
         public Double Price;
-        public Integer LineNum;
         public Integer Quantity;
+        public Integer LineNum;
         public Boolean IsPromotion;
         public String Unit;
     }

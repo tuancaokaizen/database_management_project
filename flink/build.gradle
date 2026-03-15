@@ -16,24 +16,50 @@ repositories {
 }
 
 dependencies {
-    // Flink-Core
+    // --- FLINK CORE ---
     compileOnly "org.apache.flink:flink-streaming-java:1.18.0"
     compileOnly "org.apache.flink:flink-clients:1.18.0"
 
-    // Kafka Connector
+    // --- CONNECTORS ---
+    // Kafka & Clients
     implementation "org.apache.flink:flink-connector-kafka:3.1.0-1.18"
+    implementation "org.apache.kafka:kafka-clients:3.4.0"
 
-    // Jackson
+    // Redis
+    implementation "redis.clients:jedis:4.3.1"
+
+    // Elasticsearch
+    implementation "org.apache.flink:flink-connector-elasticsearch7:3.0.1-1.17"
+    implementation "org.elasticsearch:elasticsearch:7.10.2"
+    implementation "org.elasticsearch.client:elasticsearch-rest-high-level-client:7.10.2"
+
+    // --- UTILS ---
     implementation "com.fasterxml.jackson.core:jackson-databind:2.15.2"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2"
 
-    // Logging
+    // HTTP Client (Cực kỳ quan trọng để fix lỗi parse response body)
+    implementation "org.apache.httpcomponents:httpclient:4.5.13"
+
     runtimeOnly "org.slf4j:slf4j-log4j12:1.7.36"
 }
 
 shadowJar {
-    archiveClassifier.set('')
+    archiveFileName = "flink-1.0-SNAPSHOT.jar"
     zip64 true
+
+    configurations = [project.configurations.runtimeClasspath]
+
+    // Đóng gói resources (bao gồm database_config.json)
+    from sourceSets.main.output
+
     exclude 'META-INF/*.SF'
     exclude 'META-INF/*.DSA'
     exclude 'META-INF/*.RSA'
+
+    // KHÔNG chỉ định Main-Class cố định ở đây để linh hoạt chọn Job khi chạy
+}
+
+// Đảm bảo resources được xử lý đúng
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
