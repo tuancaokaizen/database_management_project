@@ -7,11 +7,22 @@
     "port": "5432"
   },
 
-  "db_production": {
-    "host": "postgres",
-    "database": "database_management",
-    "user": "databaseteam",
-    "password": "databaseteam123",
-    "port": "5432"
+  "elasticsearch_config": {
+    "host": "http://elasticsearch:9200",
+    "index_name": "pharmacy_orders"
+  },
+
+  "redis_config": {
+    "host": "redis_cache",
+    "port": 6379,
+    "password": "",
+    "timeout": 2000,
+    "database": 0
+  },
+
+  "kafka_config": {
+    "bootstrap_servers": "kafka:29092",
+    "order_topic": "pharmacy_orders_topic",
+    "group_id": "flink_consumer_group"
   }
 }

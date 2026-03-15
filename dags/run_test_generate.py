@@ -3,10 +3,8 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime
 import sys
 
-# Cách an toàn nhất: Thêm lại path bằng code để chắc chắn 100%
 sys.path.insert(0, '/opt/airflow/src')
 
-# Import hàm generate_data từ file test_generate.py
 from test_generate import generate_data
 
 with DAG(
