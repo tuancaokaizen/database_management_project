@@ -49,4 +49,9 @@ public class ConfigReader implements Serializable {
         if (rootNode == null) loadConfig();
         return rootNode.path("elasticsearch_config");
     }
+
+    public static JsonNode getPostgresConfig() {
+        if (rootNode == null) loadConfig();
+        return rootNode.path("postgres_config");
+    }
 }
