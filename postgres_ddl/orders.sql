@@ -1,28 +1,22 @@
-CREATE TABLE public."Orders"
+CREATE TABLE public.orders
 (
-    "OrderId"       uuid NOT NULL,
-    "OrderCode"     bpchar(30) NOT NULL,
-    "OrderStatus"   int2 NULL,
-    "ShopCode"      bpchar(5) NULL,
-    "CustomerCode"  bpchar(10) NULL,
-    "InvoiceHeader" bpchar(10) NULL,
-    "CreatedDate"   timestamptz(0) NOT NULL,
-    "ModifiedDate"  timestamptz(0) NOT NULL,
-    "Shipment"      int2 NULL,
-    "OrderType"     int2 NULL,
-    "OrderChannel"  int2 NULL,
-    CONSTRAINT "Orders_InvoiceHeader_key" UNIQUE ("InvoiceHeader"),
-    CONSTRAINT "Orders_OrderCode_key" UNIQUE ("OrderCode"),
-    CONSTRAINT "Orders_pkey" PRIMARY KEY ("OrderId")
+    order_id       uuid        NOT NULL,
+    order_code     varchar(30) NOT NULL,
+    order_status   int2 NULL,
+    shop_code      varchar(5) NULL,
+    customer_code  varchar(10) NULL,
+    invoice_header varchar(10) NULL,
+    created_date   timestamptz(0) NOT NULL,
+    modified_date  timestamptz(0) NOT NULL,
+    shipment       int2 NULL,
+    order_type     int2 NULL,
+    order_channel  int2 NULL,
+    CONSTRAINT orders_pkey PRIMARY KEY (order_id),
+    CONSTRAINT orders_order_code_unique UNIQUE (order_code),
+    CONSTRAINT orders_invoice_header_unique UNIQUE (invoice_header)
 );
-CREATE INDEX idx_orders_created ON public."Orders" USING btree ("CreatedDate");
-CREATE INDEX idx_orders_customer ON public."Orders" USING btree ("CustomerCode");
-CREATE INDEX idx_orders_shop ON public."Orders" USING btree ("ShopCode");
 
-
-ALTER TABLE public."Orders"
-    ADD CONSTRAINT "Orders_CustomerCode_fkey" FOREIGN KEY ("CustomerCode") REFERENCES public."Customer" ("CustomerCode");
-ALTER TABLE public."Orders"
-    ADD CONSTRAINT "Orders_InvoiceHeader_fkey" FOREIGN KEY ("InvoiceHeader") REFERENCES public."EInvoice" ("InvoiceHeader");
-ALTER TABLE public."Orders"
-    ADD CONSTRAINT "Orders_ShopCode_fkey" FOREIGN KEY ("ShopCode") REFERENCES public."Shop" ("ShopCode");
+-- Index viết thường toàn bộ
+CREATE INDEX idx_orders_created_date ON public.orders (created_date);
+CREATE INDEX idx_orders_customer_code ON public.orders (customer_code);
+CREATE INDEX idx_orders_shop_code ON public.orders (shop_code);

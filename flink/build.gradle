@@ -19,11 +19,19 @@ dependencies {
     // --- FLINK CORE ---
     compileOnly "org.apache.flink:flink-streaming-java:1.18.0"
     compileOnly "org.apache.flink:flink-clients:1.18.0"
+    compileOnly "org.apache.flink:flink-table-api-java-bridge:1.18.0"
+    compileOnly "org.apache.flink:flink-table-planner_2.12:1.18.0"
+    compileOnly "org.apache.flink:flink-table-api-java:1.18.0"
 
     // --- CONNECTORS ---
     // Kafka & Clients
     implementation "org.apache.flink:flink-connector-kafka:3.1.0-1.18"
     implementation "org.apache.kafka:kafka-clients:3.4.0"
+
+    // Postgres
+    implementation "org.apache.flink:flink-connector-jdbc:3.1.1-1.17"
+    implementation "org.postgresql:postgresql:42.6.0"
+    implementation "org.apache.flink:flink-json:1.18.0"
 
     // Redis
     implementation "redis.clients:jedis:4.3.1"
@@ -37,7 +45,6 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-databind:2.15.2"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2"
 
-    // HTTP Client (Cực kỳ quan trọng để fix lỗi parse response body)
     implementation "org.apache.httpcomponents:httpclient:4.5.13"
 
     runtimeOnly "org.slf4j:slf4j-log4j12:1.7.36"
@@ -47,19 +54,18 @@ shadowJar {
     archiveFileName = "flink-1.0-SNAPSHOT.jar"
     zip64 true
 
+    mergeServiceFiles()
+
     configurations = [project.configurations.runtimeClasspath]
 
-    // Đóng gói resources (bao gồm database_config.json)
     from sourceSets.main.output
 
     exclude 'META-INF/*.SF'
     exclude 'META-INF/*.DSA'
     exclude 'META-INF/*.RSA'
 
-    // KHÔNG chỉ định Main-Class cố định ở đây để linh hoạt chọn Job khi chạy
 }
 
-// Đảm bảo resources được xử lý đúng
 processResources {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
