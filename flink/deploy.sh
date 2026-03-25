@@ -8,7 +8,7 @@ LOCAL_JAR_PATH="build/libs/$JAR_NAME"
 DOCKER_JAR_PATH="/tmp/$JAR_NAME"
 
 # SỬA: Xóa dấu phẩy giữa các phần tử
-JOBS=("KafkaIngestionJob" "KafkaToElasticsearchJob" "KafkaToPostgresJob")
+JOBS=("KafkaIngestionJob" "KafkaToElasticsearchJob" "KafkaToPostgresDataStreamJob")
 
 echo "🚀 Bắt đầu quy trình đóng gói..."
 

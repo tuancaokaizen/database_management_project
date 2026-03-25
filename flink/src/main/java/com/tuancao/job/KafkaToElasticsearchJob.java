@@ -65,6 +65,6 @@ public class KafkaToElasticsearchJob {
 
         kafkaStream.addSink(esSinkBuilder.build()).name("Elasticsearch Sink");
 
-        env.execute("Kafka Sink To Elasticsearch Job");
+        env.execute("Kafka Sink Orders To Elasticsearch");
     }
 }

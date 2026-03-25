@@ -1,19 +1,22 @@
-CREATE TABLE public.order_items
+-- Xóa bảng cũ nếu tồn tại
+DROP TABLE IF EXISTS public."OrderItems";
+
+CREATE TABLE public."OrderItems"
 (
-    order_item_id uuid        NOT NULL,
-    order_code    varchar(30) NOT NULL,
-    item_code     varchar(10) NOT NULL,
-    price         int4 NULL,
-    line_num      int4 NULL,
-    quantity      int4 NULL,
-    is_promotion  bool NULL,
-    unit          text NULL,
-    created_date  timestamptz(0) NULL,
-    modified_date timestamptz(0) NULL,
-    CONSTRAINT order_items_pkey PRIMARY KEY (order_item_id)
+    "OrderItemId"   UUID          NOT NULL,
+    "OrderCode"     VARCHAR(30)   NOT NULL,
+    "ItemCode"      VARCHAR(10)   NOT NULL,
+    "Price"         INT4          NULL,
+    "LineNum"       INT4          NULL,
+    "Quantity"      INT4          NULL,
+    "IsPromotion"   BOOLEAN       NULL,
+    "Unit"          TEXT          NULL,
+    "CreatedDate"   TIMESTAMPTZ(0) NULL,
+    "ModifiedDate"  TIMESTAMPTZ(0) NULL,
+    CONSTRAINT "OrderItems_pkey" PRIMARY KEY ("OrderItemId")
 );
 
--- Index viết thường toàn bộ
-CREATE INDEX idx_order_items_created_date ON public.order_items (created_date);
-CREATE INDEX idx_order_items_item_code ON public.order_items (item_code);
-CREATE INDEX idx_order_items_order_code ON public.order_items (order_code);
+-- Index cũng nên đặt tên theo format mới
+CREATE INDEX "idx_OrderItems_CreatedDate" ON public."OrderItems" ("CreatedDate");
+CREATE INDEX "idx_OrderItems_ItemCode"    ON public."OrderItems" ("ItemCode");
+CREATE INDEX "idx_OrderItems_OrderCode"   ON public."OrderItems" ("OrderCode");
