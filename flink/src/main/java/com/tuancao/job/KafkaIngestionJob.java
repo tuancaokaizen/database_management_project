@@ -41,7 +41,7 @@ public class KafkaIngestionJob {
         DataStream<String> orderStream = env.addSource(new DynamicRedisSource());
 
         orderStream.sinkTo(sink);
-        env.execute("Stream Data Process Ingestion");
+        env.execute("Kafka Simulate Data Orders");
     }
 
     public static class DynamicRedisSource extends RichSourceFunction<String> {

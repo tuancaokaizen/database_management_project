@@ -1,6 +1,6 @@
 {
   "db_datamanagement_test": {
-    "host": "postgres",
+    "host": "localhost",
     "database": "database_management",
     "user": "databaseteam",
     "password": "databaseteam123",
@@ -9,7 +9,7 @@
 
   "elasticsearch_config": {
     "host": "http://elasticsearch:9200",
-    "index_name": "pharmacy_orders"
+    "index_name": "orders_index"
   },
 
   "redis_config": {
@@ -22,7 +22,7 @@
 
   "kafka_config": {
     "bootstrap_servers": "kafka:29092",
-    "order_topic": "pharmacy_orders_topic",
+    "order_topic": "orders_topic",
     "group_id": "flink_consumer_group"
   }
 }
